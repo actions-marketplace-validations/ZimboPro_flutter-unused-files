@@ -1,0 +1,64 @@
+name: flutter-unused-files
+description: Check for unused files and assets in a Flutter project
+author: ZimboPro <dejagerleslie@gmail.com>
+inputs:
+  path:
+    description: "The path to the flutter project"
+    required: false
+    default: "."
+  warning:
+    description: "Whether the output should be seen as a warning or an error"
+    required: false
+    default: "false"
+  assets:
+    description: "Ignore assets checks in the project"
+    required: false
+    default: "false"
+  token:
+    description: "The GitHub token to use for downloading the action, defaults to workflow token"
+    required: false
+    default: ${{ github.token }}
+outputs:
+  error:
+    description: "The application has unused assets/files"
+    value: ${{ steps.run.outputs.error }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set reusable variables
+      shell: bash
+      run: |
+        echo "action_repo=flutter-unused-files" >> $GITHUB_ENV
+        echo "action_org=ZimboPro" >> $GITHUB_ENV
+        echo "binary_name=flutter-unused-files" >> $GITHUB_ENV
+
+    - name: Add binary extension
+      shell: bash
+      if: runner.os == 'Windows'
+      run: echo "binary_name=${{ env.binary_name }}.exe" >> $GITHUB_ENV
+
+    - name: Get Action Version
+      id: get_action_version
+      shell: pwsh
+      run: |
+        $finalComponent = Split-Path -Leaf ${{ github.action_path }}
+        if ($finalComponent -eq "${{ env.action_repo }}") {
+          $version = ""
+        } else {
+          $version = $finalComponent
+        }
+        Write-Output "version=$version" >> $Env:GITHUB_OUTPUT
+
+    - name: Download Action
+      shell: bash
+      run: |
+        gh release download ${{ steps.get_action_version.outputs.version }} --repo ${{ env.action_org }}/${{ env.action_repo }} --pattern '${{ runner.os }}.tgz'
+        tar -xzf ${{ runner.os }}.tgz
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+
+    - name: Run Action
+      shell: bash
+      id: run
+      run: ./${{ runner.os }}/${{ env.binary_name }} -p "${{ inputs.error }}" -w ${{ inputs.warning }} -a ${{ inputs.assets }}
