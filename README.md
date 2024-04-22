@@ -19,3 +19,75 @@ It will take the asset and/or file name and search all the files to see if it is
 - [x] Implement the action's logic in `src/main.rs`
 - [ ] Trigger a release in GitHub Actions
 - [ ] Edit the triggered release to set release notes and publish the action to GitHub Marketplace
+
+## Example
+
+### Normal App
+
+```yaml
+name: Check for unused files
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ZimboPro/flutter-unused-files@v1.0.0
+```
+
+### Ignore Assets
+
+```yaml
+name: Check for unused files
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ZimboPro/flutter-unused-files@v1.0.0
+        with:
+            assets: true
+```
+
+### Specific package
+
+```yaml
+name: Check for unused files
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ZimboPro/flutter-unused-files@v1.0.0
+        with:
+            path: packages/my-package
+```
+
+### Output warnings instead of an error
+
+```yaml
+name: Check for unused files
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ZimboPro/flutter-unused-files@v1.0.0
+        with:
+            warning: true
+```
