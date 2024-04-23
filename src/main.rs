@@ -11,7 +11,7 @@ use glob::glob;
 use indicatif::ProgressBar;
 
 #[derive(Debug, Parser, Clone)]
-struct CLI {
+struct Cli {
     /// If output should be a warning
     #[arg(short, long)]
     warning: bool,
@@ -36,7 +36,7 @@ fn write_error(github_output_path: String, message: String) {
 }
 
 fn main() {
-    let args = CLI::parse();
+    let args = Cli::parse();
     let valid = find_unreferenced_asset_files(args);
 
     if !valid {
@@ -49,7 +49,7 @@ fn main() {
     }
 }
 
-fn find_unreferenced_asset_files(args: CLI) -> bool {
+fn find_unreferenced_asset_files(args: Cli) -> bool {
     if args.warning {
         println!("INFO: Setting output to warning instead of error");
     }
