@@ -37,11 +37,11 @@ fn write_error(github_output_path: String, message: String) {
 
 fn main() {
     let args = Cli::parse();
-    let valid = find_unreferenced_asset_files(args);
+    let valid = find_unreferenced_asset_files(&args);
 
-    if !valid {
+    if !valid && !args.warning {
         exit(1);
-    } else {
+    } else if valid {
         write_info(
             env::var("GITHUB_OUTPUT").unwrap(),
             "No unreferenced files found".to_string(),
@@ -49,7 +49,7 @@ fn main() {
     }
 }
 
-fn find_unreferenced_asset_files(args: Cli) -> bool {
+fn find_unreferenced_asset_files(args: &Cli) -> bool {
     if args.warning {
         println!("INFO: Setting output to warning instead of error");
     }
@@ -93,7 +93,7 @@ fn find_unreferenced_asset_files(args: Cli) -> bool {
     let mut unreferenced_files = Vec::new();
     for asset in assets {
         let file_name = asset.file_name().unwrap();
-        if !referenced_asset_files.contains(&file_name.to_os_string()) {
+        if file_name != "main.dart" && !referenced_asset_files.contains(&file_name.to_os_string()) {
             unreferenced_files.push(asset);
         }
     }
