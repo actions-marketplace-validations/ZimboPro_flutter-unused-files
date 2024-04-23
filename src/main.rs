@@ -10,13 +10,13 @@ use clap::Parser;
 use glob::glob;
 use indicatif::ProgressBar;
 
-#[derive(Debug, Parser, Clone)]
+#[derive(Debug, Parser, Clone, PartialEq, Eq)]
 struct Cli {
     /// If output should be a warning
-    #[arg(short, long)]
+    #[arg(short, long, action = clap::ArgAction::Set)]
     warning: bool,
     /// If assets should be ignored
-    #[arg(short, long)]
+    #[arg(short, long, action = clap::ArgAction::Set)]
     assets: bool,
 }
 
@@ -123,4 +123,57 @@ fn find_unreferenced_asset_files(args: Cli) -> bool {
         }
     }
     valid
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_args_all_true() {
+        let args = Cli::parse_from(&["test", "-w=true", "-a=true"]);
+        assert_eq!(
+            args,
+            Cli {
+                warning: true,
+                assets: true
+            }
+        );
+    }
+
+    #[test]
+    fn test_args_warning_true() {
+        let args = Cli::parse_from(&["test", "-w=true", "-a=false"]);
+        assert_eq!(
+            args,
+            Cli {
+                warning: true,
+                assets: false
+            }
+        );
+    }
+
+    #[test]
+    fn test_args_assets_true() {
+        let args = Cli::parse_from(&["test", "-w=false", "-a=true"]);
+        assert_eq!(
+            args,
+            Cli {
+                warning: false,
+                assets: true
+            }
+        );
+    }
+
+    #[test]
+    fn test_args_all_false() {
+        let args = Cli::parse_from(&["test", "-w=false", "-a=false"]);
+        assert_eq!(
+            args,
+            Cli {
+                warning: false,
+                assets: false
+            }
+        );
+    }
 }
