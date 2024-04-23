@@ -12,14 +12,6 @@ It will take the asset and/or file name and search all the files to see if it is
 - `warning` - Optional - Instead of exiting with an error, just list the unused assets/files as a warning. Default: `false`
 - `assets` - Optional - Whether the assets checks should be ignored. Needs to be considered if app has displays the asset based off of a API response. Default: `false`
 
-## TODO
-
-- [x] Update this README with the details of this action
-- [x] Update inputs/outputs in `action.yaml`
-- [x] Implement the action's logic in `src/main.rs`
-- [ ] Trigger a release in GitHub Actions
-- [ ] Edit the triggered release to set release notes and publish the action to GitHub Marketplace
-
 ## Example
 
 ### Normal App
@@ -71,7 +63,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ZimboPro/flutter-unused-files@v1.0.0
         with:
-            path: packages/my-package
+            dir: packages/my-package
 ```
 
 ### Output warnings instead of an error
