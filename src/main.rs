@@ -54,10 +54,10 @@ fn find_unreferenced_asset_files(args: CLI) -> bool {
         Vec::new()
     } else {
         let assets = glob("assets/**/*").expect("Failed to read glob pattern");
-        assets.flatten().map(|x| x).collect()
+        assets.flatten().collect()
     };
     let dart = glob("lib/**/*.dart").expect("Failed to read glob pattern");
-    let dart: Vec<PathBuf> = dart.flatten().map(|x| x).collect();
+    let dart: Vec<PathBuf> = dart.flatten().collect();
     let mut asset_files = Vec::new();
     for asset in assets.iter() {
         asset_files.push(asset.file_name().unwrap().to_owned());
@@ -78,7 +78,7 @@ fn find_unreferenced_asset_files(args: CLI) -> bool {
         for dart_file in dart.clone() {
             let name = dart_file.file_name().unwrap().to_str().unwrap();
             if file != dart_file
-                && (contents.contains(name) || contents.contains(name.replace(" ", "%20").as_str()))
+                && (contents.contains(name) || contents.contains(name.replace(' ', "%20").as_str()))
             {
                 referenced_dart_files.insert(dart_file);
             }
