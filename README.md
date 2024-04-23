@@ -8,7 +8,7 @@ It will take the asset and/or file name and search all the files to see if it is
 
 ## Inputs
 
-- `path` - Optional - Relative path to the Flutter app/package that needs to checked for unused assets or files. It will expect a `lib` folder to be present at the path e.g. `path: packages/my-package`. Default: `.`
+- `dir` - Optional - Relative path to the Flutter app/package that needs to checked for unused assets or files. It will expect a `lib` folder to be present at the path e.g. `dir: packages/my-package`. Default: `.`
 - `warning` - Optional - Instead of exiting with an error, just list the unused assets/files as a warning. Default: `false`
 - `assets` - Optional - Whether the assets checks should be ignored. Needs to be considered if app has displays the asset based off of a API response. Default: `false`
 
