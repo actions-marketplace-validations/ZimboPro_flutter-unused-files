@@ -12,8 +12,6 @@ use indicatif::ProgressBar;
 
 #[derive(Debug, Parser, Clone)]
 struct CLI {
-    #[arg(short, long)]
-    path: PathBuf,
     /// If output should be a warning
     #[arg(short, long)]
     warning: bool,
@@ -39,15 +37,6 @@ fn write_error(github_output_path: String, message: String) {
 
 fn main() {
     let args = CLI::parse();
-    if !args.path.exists() {
-        eprintln!("Path does not exist");
-        exit(1);
-    } else if args.path.is_dir() {
-        std::env::set_current_dir(args.path.clone()).expect("Failed to set current directory");
-    } else {
-        let parent = args.path.parent().expect("Failed to get parent directory");
-        std::env::set_current_dir(parent).expect("Failed to set current directory");
-    }
     let valid = find_unreferenced_asset_files(args);
 
     if !valid {
@@ -65,10 +54,10 @@ fn find_unreferenced_asset_files(args: CLI) -> bool {
         Vec::new()
     } else {
         let assets = glob("assets/**/*").expect("Failed to read glob pattern");
-        assets.flatten().map(|x| x).collect()
+        assets.flatten().collect()
     };
     let dart = glob("lib/**/*.dart").expect("Failed to read glob pattern");
-    let dart: Vec<PathBuf> = dart.flatten().map(|x| x).collect();
+    let dart: Vec<PathBuf> = dart.flatten().collect();
     let mut asset_files = Vec::new();
     for asset in assets.iter() {
         asset_files.push(asset.file_name().unwrap().to_owned());
@@ -89,7 +78,7 @@ fn find_unreferenced_asset_files(args: CLI) -> bool {
         for dart_file in dart.clone() {
             let name = dart_file.file_name().unwrap().to_str().unwrap();
             if file != dart_file
-                && (contents.contains(name) || contents.contains(name.replace(" ", "%20").as_str()))
+                && (contents.contains(name) || contents.contains(name.replace(' ', "%20").as_str()))
             {
                 referenced_dart_files.insert(dart_file);
             }
