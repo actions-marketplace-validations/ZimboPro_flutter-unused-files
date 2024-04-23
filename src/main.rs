@@ -11,7 +11,7 @@ use glob::glob;
 use indicatif::ProgressBar;
 
 #[derive(Debug, Parser, Clone)]
-struct CLI {
+struct Cli {
     /// If output should be a warning
     #[arg(short, long)]
     warning: bool,
@@ -31,12 +31,12 @@ fn write_warning(github_output_path: String, message: String) {
 }
 
 fn write_error(github_output_path: String, message: String) {
-    eprintln!("Error: {}", message);
+    eprintln!("ERROR: {}", message);
     write(github_output_path, format!("error={message}")).unwrap();
 }
 
 fn main() {
-    let args = CLI::parse();
+    let args = Cli::parse();
     let valid = find_unreferenced_asset_files(args);
 
     if !valid {
@@ -49,8 +49,12 @@ fn main() {
     }
 }
 
-fn find_unreferenced_asset_files(args: CLI) -> bool {
+fn find_unreferenced_asset_files(args: Cli) -> bool {
+    if args.warning {
+        println!("INFO: Setting output to warning instead of error");
+    }
     let assets: Vec<PathBuf> = if args.assets {
+        println!("INFO: Ignoring assets");
         Vec::new()
     } else {
         let assets = glob("assets/**/*").expect("Failed to read glob pattern");

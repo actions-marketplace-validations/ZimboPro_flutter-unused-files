@@ -60,6 +60,25 @@ runs:
 
     - name: Run Action
       shell: bash
+      if: inputs.warning == "false" && inputs.assets == "false"
       id: run
       working-directory: ${{inputs.dir}}
-      run: ./${{ runner.os }}/${{ env.binary_name }} -w ${{ inputs.warning }} -a ${{ inputs.assets }}
+      run: ./${{ runner.os }}/${{ env.binary_name }}
+    - name: Run Action
+      shell: bash
+      if: inputs.warning != "false" && inputs.assets == "false"
+      id: run-warning
+      working-directory: ${{inputs.dir}} -w
+      run: ./${{ runner.os }}/${{ env.binary_name }}
+    - name: Run Action
+      shell: bash
+      if: inputs.warning == "false" && inputs.assets != "false"
+      id: run-no-assets
+      working-directory: ${{inputs.dir}}
+      run: ./${{ runner.os }}/${{ env.binary_name }} -a
+    - name: Run Action
+      shell: bash
+      if: inputs.warning != "false" && inputs.assets != "false"
+      id: run-warning-no-assets
+      working-directory: ${{inputs.dir}}
+      run: ./${{ runner.os }}/${{ env.binary_name }} -w -a
