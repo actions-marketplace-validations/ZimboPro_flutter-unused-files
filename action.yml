@@ -61,4 +61,5 @@ runs:
     - name: Run Action
       shell: bash
       id: run
-      run: ./${{ runner.os }}/${{ env.binary_name }} -p "${{ inputs.dir }}" -w ${{ inputs.warning }} -a ${{ inputs.assets }}
+      working-directory: ${{inputs.dir}}
+      run: ./${{ runner.os }}/${{ env.binary_name }} -w ${{ inputs.warning }} -a ${{ inputs.assets }}

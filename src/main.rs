@@ -12,8 +12,6 @@ use indicatif::ProgressBar;
 
 #[derive(Debug, Parser, Clone)]
 struct CLI {
-    #[arg(short, long)]
-    path: PathBuf,
     /// If output should be a warning
     #[arg(short, long)]
     warning: bool,
@@ -39,15 +37,6 @@ fn write_error(github_output_path: String, message: String) {
 
 fn main() {
     let args = CLI::parse();
-    if !args.path.exists() {
-        eprintln!("Path does not exist");
-        exit(1);
-    } else if args.path.is_dir() {
-        std::env::set_current_dir(args.path.clone()).expect("Failed to set current directory");
-    } else {
-        let parent = args.path.parent().expect("Failed to get parent directory");
-        std::env::set_current_dir(parent).expect("Failed to set current directory");
-    }
     let valid = find_unreferenced_asset_files(args);
 
     if !valid {
